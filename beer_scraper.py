@@ -35,9 +35,23 @@ def albert_heijn(driver) -> dict:
         fract= float(soup.select_one("span[class*='price-amount_fractional']").text)/100
         return full+fract
     
+    def future_promotion(driver):
+        discount_selector = "div[class*='product-hero_root']"
+        results_el = driver.find_element_by_css_selector(discount_selector)
+        results_html = results_el.get_attribute('outerHTML')
+        soup = BeautifulSoup(results_html, 'html.parser')
+        discount_time = soup.select_one("span[class*='smart-label_lineclamp']")
+        if discount_time is not None:
+            return 'vanaf' in discount_time.text
+        return False
+            
+    
     def visit_page(url,driver):
         driver.get(url)
-        results_selector = "div[class*='product-card-hero-price_now']"
+        if not future_promotion(driver):
+            results_selector = "div[class*='product-card-hero-price_now']"
+        else:
+            results_selector = "div[class*='product-card-hero-price_was']"
         results_el = driver.find_element_by_css_selector(results_selector)
         results_html = results_el.get_attribute('outerHTML')
         return results_html
