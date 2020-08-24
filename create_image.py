@@ -35,16 +35,19 @@ def plot_supermarket(ax,brand,supermarket):
                     boxcoords="offset points",frameon=False
                     )
     return ab
+def create_plot():
+    fig, ax = plt.subplots()
+    minima = determine_minima(brands)
+    for key in minima.keys():
+        ab=plot_supermarket(ax,key,minima[key][0])
+        ax.add_artist(ab)
+        ax.text(text_positions[key][0], text_positions[key][1], '€'+str(minima[key][1]), horizontalalignment='center',verticalalignment='center', transform=ax.transAxes,fontsize=80)
 
-fig, ax = plt.subplots()
-minima = determine_minima(brands)
-for key in minima.keys():
-    ab=plot_supermarket(ax,key,minima[key][0])
-    ax.add_artist(ab)
-    ax.text(text_positions[key][0], text_positions[key][1], '€'+str(minima[key][1]), horizontalalignment='center',verticalalignment='center', transform=ax.transAxes,fontsize=80)
+    img = mpimg.imread('background.jpg')
+    plt.tick_params(axis='both', labelsize=0, length = 0)
+    plt.box(False)
+    plt.imshow(img)
+    plt.savefig('output.png', bbox_inches='tight')
 
-img = mpimg.imread('background.jpg')
-plt.tick_params(axis='both', labelsize=0, length = 0)
-plt.box(False)
-plt.imshow(img)
-plt.savefig('output.png', bbox_inches='tight')
+if __name__ == '__main__':
+    create_plot()
