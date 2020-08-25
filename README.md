@@ -8,7 +8,7 @@ In order to overcome non-overlapping discounting periods, daily beer prices are 
 
 ## Aim of The Tool
 The aim of the tool is to gather insight in the history of beer prices, discounts and to provide an overview of the cheapest crates of beer at any moment.
-The A history of beer prices of beer prices is displayed at [dijkstrar.github.io], together with daily information on cheapest beers.
+The A history of beer prices of beer prices is displayed at https://dijkstrar.github.io , together with daily information on cheapest beers.
 
 ## Example
 A relatively relatively straightforward image will highlight which brands can be obtained for the lowest price at which supermarket.
