@@ -1,5 +1,15 @@
+--- 
+title: 'Beerprice Tracker' 
+date: 2020-08-25 
+permalink: /portfolio/2020/08/beerprices/ 
+---
+
+History of beer prices and an overview on where to get the cheapest beer. Updated at: 2020/08/25 18:30
+
+This is a dynamically updating web page.
+
 # beer_tracker
-Daily scrape beer crate prices of major brands in the Netherlands. 
+This is a brief overview on the tool that scrapes beer crate prices daily.
 Beer prices are collected from Albert Heijn, Dirk and Jumbo
 
 ## Methodology
@@ -15,3 +25,4 @@ The history of beer prices is displayed at the bottom of the page.
 ## Example
 A relatively straightforward image will highlight which brands can be obtained for the lowest price at which supermarket right now.
 ![alt text](<output.png>) 
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> 
