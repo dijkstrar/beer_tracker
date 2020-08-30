@@ -8,35 +8,128 @@ import subprocess
 import sys
 
 brands = ['Heineken','Grolsch','Brand','Hertog Jan']
-#https://stackoverflow.com/questions/46410738/plotly-how-to-select-graph-source-using-dropdown
-#https://plotly.com/python/dropdowns/
-def get_html(brand,df):
-    fig = px.line(df, x=df.index, y=column, title=None)#get_title(column)
-    fig.update_yaxes(rangemode="tozero")
-    fig.update_traces(line_color='#000')
-    fig.update_xaxes(
-        rangeslider_visible=True,
-        rangeselector=dict(
-            buttons=list([
-                dict(count=24, label="24h", step="hour", stepmode="todate"),
-                dict(count=7, label="1w", step="day", stepmode="todate"),
-                dict(count=14, label="2w", step="day", stepmode="todate"),
-                dict(count=1, label="1m", step="month", stepmode="todate"),
-                dict(count=6, label="6m", step="month", stepmode="todate"),
-                dict(count=1, label="YTD", step="year", stepmode="todate"),
-                dict(step="all",label="All")
-            ])
-        )
-    )
+colors_supermarket={'Dirk':	'#dd0000','Jumbo':'#ffcc00','Albert Heijn':'#00a1e5'}
+colors_beer = {'Heineken':'#26814c','Grolsch':'#38901f','Brand':'#1b3c33','Hertog Jan':'#debc50'}
+
+def get_dataframe_supermarket(supermarket):
+    result = pd.DataFrame()
+    for brand in ['Heineken','Grolsch','Brand','Hertog Jan']:
+        result[brand]=pd.read_csv('logs/'+brand+'.txt',sep=';',index_col='Date')[supermarket]
+    return result
+
+def get_dataframe_brand():
+    supermarkets = ['Dirk','Jumbo','Albert Heijn']
+    result = []
+    for supermarket in supermarkets:
+        result.append(pd.concat([get_dataframe_supermarket(supermarket)], keys=[supermarket], names=['Supermarket']))
+    result=pd.concat(result)
+    return result
+
+def get_supermarket_graph(df):
+    fig = go.Figure()
+    for supermarket in list(df.index.get_level_values(0).unique()):
+        df_sup = df.xs(supermarket)
+        for column in df_sup.columns.to_list():
+            fig.add_trace(
+                go.Scatter(
+                    x = df_sup.index,
+                    y = df_sup[column],
+                    name = column,
+                    line=dict(color=colors_beer[column]),
+                    visible=False
+                )
+            )
     fig.update_layout(template="simple_white")
+    fig.update_layout(
+        updatemenus=[go.layout.Updatemenu(
+            active=0,
+            direction='down',
+            buttons=list(
+                [dict(label = 'Select Supermarket',
+                      method = 'update',
+                      args = [{'visible': [False]*12}, # the index of True aligns with the indices of plot traces
+                              {'title': 'Please Select a Supermarket',
+                               'showlegend':False}])
+                 ,dict(label = 'Dirk',
+                      method = 'update',
+                      args = [{'visible': [True]*4+[False]*8}, # the index of True aligns with the indices of plot traces
+                              {'title': 'Dirk Beer Prices',
+                               'showlegend':True}]),
+                 dict(label = 'Jumbo',
+                      method = 'update',
+                      args = [{'visible': [False]*4+[True]*4+[False]*4},
+                              {'title': 'Jumbo Beer Prices',
+                               'showlegend':True}]),
+                 dict(label = 'Albert Heijn',
+                      method = 'update',
+                      args = [{'visible': [False]*8+[True]*4},
+                              {'title': 'Albert Heijn Beer Prices',
+                               'showlegend':True}]),
+                ])
+            )
+        ])
 
     string = plotly.io.to_html(fig,full_html=False,include_plotlyjs=False)
     string=string.replace("\n", "")
-    return(string)
+    return string
+
+def get_beer_graphs(df):
+    fig = go.Figure()
+    for supermarket in list(df.index.get_level_values(0).unique()):
+        df_sup = df.xs(supermarket)
+        for column in df_sup.columns.to_list():
+            fig.add_trace(
+                go.Scatter(
+                    x = df_sup.index,
+                    y = df_sup[column],
+                    name = supermarket,
+                    line=dict(color=colors_supermarket[supermarket]),
+                    visible=False
+                )
+            )
+
+    fig.update_layout(template="simple_white")
+    fig.update_layout(
+        updatemenus=[go.layout.Updatemenu(
+            active=0,
+            direction='down',
+            buttons=list(
+                [dict(label = 'Select Label',
+                      method = 'update',
+                      args = [{'visible': [False]*12}, # the index of True aligns with the indices of plot traces
+                              {'title': 'Please Select a Beer Brand',
+                               'showlegend':False}])
+                 ,dict(label = 'Heineken',
+                      method = 'update',
+                      args = [{'visible': [True,False,False,False]*3}, # the index of True aligns with the indices of plot traces
+                              {'title': 'Heineken',
+                               'showlegend':True}]),
+                 dict(label = 'Grolsch',
+                      method = 'update',
+                      args = [{'visible': [False,True,False,False]*3},
+                              {'title': 'Grolsch',
+                               'showlegend':True}]),
+                 dict(label = 'Brand',
+                      method = 'update',
+                      args = [{'visible': [False,False,True,False]*3},
+                              {'title': 'Brand',
+                               'showlegend':True}]),
+                 dict(label = 'Hertog Jan',
+                      method = 'update',
+                      args = [{'visible': [False,False,False,True]*3},
+                              {'title': 'Hertog Jan',
+                               'showlegend':True}]),
+                ])
+            )
+        ])        
+
+    string = plotly.io.to_html(fig,full_html=False,include_plotlyjs=False)
+    string=string.replace("\n", "")
+    return string
 
 def write_markup():
     ############################ CHANGE PATHS #######################
-    path = 'output.md' #'/home/pi/dijkstrar.github.io/_portfolio/beerprices.md'
+    path = 'beerprices.md' #'/home/pi/dijkstrar.github.io/_portfolio/beerprices.md'
     title_md = "--- \ntitle: \'Beerprice Tracker\' \ndate: 2020-08-25 \npermalink: /portfolio/2020/08/beerprices/ \n---\n\n"
     update_date_md = "History of beer prices and an overview on where to get the cheapest beer. Updated at: "+str(pd.to_datetime("today").strftime("%Y/%m/%d %H:%M")+"\n\n")
     body_md = '''This is a dynamically updating web page.\n
@@ -52,11 +145,18 @@ A choice was made to only highlight the four major beer brands (Heineken, Grolsc
 
 ## Aim of The Tool
 The aim of the tool is to gather insight in the history of beer prices, discounts and to provide an overview of the cheapest crates of beer at any moment.
-The history of beer prices is displayed at the bottom of the page. 
+The history of beer prices is displayed at the bottom of the page. For this history two options exist. You may either choose to display history of beer prices for a specific brand at the three major supermarkets.
+Moreover, you can also select to see the history of beer prices at each separate supermarket.
 
 ## Example
 A relatively relatively straightforward image will highlight which brands can be obtained for the lowest price at which supermarket.
-![alt text](<output.png>) \n'''
+![alt text](<https://github.com/dijkstrar/beer_tracker/blob/master/output.png>)
+
+
+## History of Beer Prices 
+### Per Supermarket
+
+\n'''
     javascript_md = '<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> \n'
     try:
         with open(path,'w') as f:
@@ -64,10 +164,10 @@ A relatively relatively straightforward image will highlight which brands can be
             f.write(update_date_md)
             f.write(body_md)
             f.write(javascript_md)
-            for brand in brands:
-                df=pd.read_csv('logs/'+brand+'.txt',sep=';',index_col='Date')
-                df.index=pd.to_datetime(df.index)
-
+            df=get_dataframe_brand()
+            f.write(get_supermarket_graph(df))
+            f.write('\n### Per Beer Brand \n')
+            f.write(get_beer_graphs(df))
         f.close()
     except:
         print('Error occurred in Generating plotly files')
