@@ -1,4 +1,6 @@
 #IMPORTS
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib.offsetbox import (TextArea, DrawingArea, OffsetImage, AnnotationBbox)
 from matplotlib.cbook import get_sample_data
 import matplotlib.image as mpimg 
@@ -50,12 +52,13 @@ def create_plot():
         ab=plot_supermarket(ax,key,minima[key][0])
         ax.add_artist(ab)
         ax.text(text_positions[key][0], text_positions[key][1], '€'+str(minima[key][1]), horizontalalignment='center',verticalalignment='center', transform=ax.transAxes,fontsize=80)
-
+    ax.text(0,0,'Date: '+pd.to_datetime("today").strftime("%Y/%m/%d"),horizontalalignment='center',verticalalignment='center',transform=ax.transAxes,fontsize=40)
     img = mpimg.imread('background.jpg')
     plt.tick_params(axis='both', labelsize=0, length = 0)
     plt.box(False)
     plt.imshow(img)
     plt.savefig('output.png', bbox_inches='tight')
+    plt.savefig('../dijkstrar.github.io/images/beer_output.png', bbox_inches='tight')
 
 if __name__ == '__main__':
     create_plot()

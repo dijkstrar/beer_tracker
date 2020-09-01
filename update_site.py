@@ -15,6 +15,7 @@ def get_dataframe_supermarket(supermarket):
     result = pd.DataFrame()
     for brand in ['Heineken','Grolsch','Brand','Hertog Jan']:
         result[brand]=pd.read_csv('logs/'+brand+'.txt',sep=';',index_col='Date')[supermarket]
+    print('lukt1')
     return result
 
 def get_dataframe_brand():
@@ -129,11 +130,11 @@ def get_beer_graphs(df):
 
 def write_markup():
     ############################ CHANGE PATHS #######################
-    path = 'beerprices.md' #'/home/pi/dijkstrar.github.io/_portfolio/beerprices.md'
+    path = '/home/pi/dijkstrar.github.io/_portfolio/beerprices.md'
     title_md = "--- \ntitle: \'Beerprice Tracker\' \ndate: 2020-08-25 \npermalink: /portfolio/2020/08/beerprices/ \n---\n\n"
     update_date_md = "History of beer prices and an overview on where to get the cheapest beer. Updated at: "+str(pd.to_datetime("today").strftime("%Y/%m/%d %H:%M")+"\n\n")
     body_md = '''This is a dynamically updating web page.\n
-# beer_tracker
+# Beer Tracker
 This is a brief overview on the tool that scrapes beer crate prices daily.
 Beer prices are collected from Albert Heijn, Dirk and Jumbo
 
@@ -150,35 +151,34 @@ Moreover, you can also select to see the history of beer prices at each separate
 
 ## Example
 A relatively relatively straightforward image will highlight which brands can be obtained for the lowest price at which supermarket.
-![alt text](<https://github.com/dijkstrar/beer_tracker/blob/master/output.png>)
-
+<img src="/images/beer_output.png" >
 
 ## History of Beer Prices 
 ### Per Supermarket
 
 \n'''
     javascript_md = '<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> \n'
-    try:
-        with open(path,'w') as f:
-            f.write(title_md)
-            f.write(update_date_md)
-            f.write(body_md)
-            f.write(javascript_md)
-            df=get_dataframe_brand()
-            f.write(get_supermarket_graph(df))
-            f.write('\n### Per Beer Brand \n')
-            f.write(get_beer_graphs(df))
+
+    with open(path,'w') as f:
+        f.write(title_md)
+        f.write(update_date_md)
+        f.write(body_md)
+        f.write(javascript_md)
+        df=get_dataframe_brand()
+        f.write(get_supermarket_graph(df))
+        f.write('\n### Per Beer Brand \n')
+        f.write(get_beer_graphs(df))
         f.close()
-    except:
-        print('Error occurred in Generating plotly files')
-        with open(path,'w') as f:
-            f.write(title_md)
-            f.write(update_date_md)
-            f.write(body_md)
-            f.write(javascript_md)
-            f.write('*An error occurred in generating plots*')
-        f.close()
+
+#        print('Error occurred in Generating plotly files')
+#        with open(path,'w') as f:
+#            f.write(title_md)
+#            f.write(update_date_md)
+#            f.write(body_md)
+#            f.write(javascript_md)
+#            f.write('*An error occurred in generating plots*')
+#        f.close()
 
 if __name__ == '__main__':
     write_markup()
-    # subprocess.call(['/home/pi/net_speed/pusher_of_page.sh'],shell=True)
+    subprocess.call(['/home/pi/beer_tracker/pusher_of_page.sh'],shell=True)
