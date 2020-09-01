@@ -8,6 +8,7 @@ from matplotlib.pylab import rcParams
 rcParams['figure.figsize'] = 48, 24
 from matplotlib.offsetbox import TextArea, DrawingArea, OffsetImage, AnnotationBbox
 import pandas as pd
+import numpy as np
 
 # VARIABLES
 brands = ['Heineken','Grolsch','Brand','Hertog Jan']
@@ -17,12 +18,18 @@ box_positions = {'Heineken':(1000., -260.),'Grolsch':(1000,-530),'Brand':(1000.,
 text_positions = {'Heineken':(0.8, 0.79),'Grolsch':(0.8, 0.58),'Brand':(0.8, 0.38),'Hertog Jan':(0.8, 0.17)}
 
 
+def prepare_df(brand):
+    df=pd.read_csv('logs/'+brand+'.txt',sep=';',index_col='Date')
+    df.index=pd.to_datetime(df.index)
+    for column in df.columns:
+        df[column]=pd.to_numeric(df[column])
+    return df
+
 def determine_minima(brands):
     minima = {}
     for brand in brands:
-        df=pd.read_csv('logs/'+brand+'.txt',sep=';',index_col='Date')
-        df.index=pd.to_datetime(df.index)
-        minima[brand] = (df.iloc[-1].idxmin(),min(df.iloc[-1]))
+        brand_df = prepare_df(brand)
+        minima[brand] = (brand_df.iloc[-1].idxmin(),np.nanmin(brand_df.iloc[-1]))
     return minima
 
 def plot_supermarket(ax,brand,supermarket):
@@ -35,6 +42,7 @@ def plot_supermarket(ax,brand,supermarket):
                     boxcoords="offset points",frameon=False
                     )
     return ab
+
 def create_plot():
     fig, ax = plt.subplots()
     minima = determine_minima(brands)

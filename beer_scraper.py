@@ -9,6 +9,7 @@ from contextlib import contextmanager
 import time
 import re
 import pandas as pd
+import numpy as np
 
 
 @contextmanager
@@ -83,21 +84,33 @@ def dirk(driver):
         return price
 
     def visit_page(url,driver):
+        print(url)
         driver.get(url)
+        time.sleep(10)
         try: # discounted
             results_selector = "div[class*='product-card__discount']"
             results_el = driver.find_element_by_css_selector(results_selector)
             discount = True
+            assort=True
         except NoSuchElementException: #not discounted
             discount = False
             results_selector = "div[class*='product-card__price__new']"
+        try:
             results_el = driver.find_element_by_css_selector(results_selector)
-        results_html = results_el.get_attribute('outerHTML')
-        return results_html,discount
+            results_html = results_el.get_attribute('outerHTML')
+            assort=True
+        except: #item does not exist
+            assort=False
+            results_html=None
+            discount=None
+        return results_html,discount,assort
 
     result_dict = {}
     for (beer,url) in beer_urls.items():
-        results_html,discount=visit_page(url,driver)
+        results_html,discount,assort=visit_page(url,driver)
+        if not assort:
+            result_dict[beer]=np.nan
+            continue
         soup = BeautifulSoup(results_html, 'html.parser')
         info = extract_price(soup,discount)
         result_dict[beer] = info
