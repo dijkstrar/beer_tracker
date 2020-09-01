@@ -15,7 +15,6 @@ def get_dataframe_supermarket(supermarket):
     result = pd.DataFrame()
     for brand in ['Heineken','Grolsch','Brand','Hertog Jan']:
         result[brand]=pd.read_csv('logs/'+brand+'.txt',sep=';',index_col='Date')[supermarket]
-    print('lukt1')
     return result
 
 def get_dataframe_brand():
