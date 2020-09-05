@@ -59,7 +59,7 @@ def create_plot():
     img = mpimg.imread('background.jpg')
     plt.tick_params(axis='both', labelsize=0, length = 0)
     plt.box(False)
-    #plt.imshow(img)
+    plt.imshow(img)
     print('SAVING IMAGE')
     plt.savefig('output.png', bbox_inches='tight')
     plt.savefig('../dijkstrar.github.io/images/beer_output.png', bbox_inches='tight')
