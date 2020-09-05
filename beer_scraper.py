@@ -86,12 +86,13 @@ def dirk(driver):
     def visit_page(url,driver):
         print(url)
         driver.get(url)
-        time.sleep(10)
+        time.sleep(30)
         try: # discounted
             results_selector = "div[class*='product-card__discount']"
             results_el = driver.find_element_by_css_selector(results_selector)
             discount = True
             assort=True
+            
         except NoSuchElementException: #not discounted
             discount = False
             results_selector = "div[class*='product-card__price__new']"
@@ -114,6 +115,7 @@ def dirk(driver):
         soup = BeautifulSoup(results_html, 'html.parser')
         info = extract_price(soup,discount)
         result_dict[beer] = info
+        print(info)
     return result_dict
 
 
@@ -130,6 +132,7 @@ def jumbo(driver):
 
     def visit_page(url,driver):
         driver.get(url)
+        print(url)
         results_selector = "span[class*='jum-product-price__current-price']"
         time.sleep(1)
         results_el = driver.find_element_by_css_selector(results_selector)

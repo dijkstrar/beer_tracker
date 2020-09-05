@@ -179,5 +179,7 @@ A relatively relatively straightforward image will highlight which brands can be
 #        f.close()
 
 if __name__ == '__main__':
+    print('STARTING')
     write_markup()
     subprocess.call(['/home/pi/beer_tracker/pusher_of_page.sh'],shell=True)
+    print('GENERATION COMPLETE')

@@ -1,4 +1,5 @@
 #IMPORTS
+print('STARTING')
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib.offsetbox import (TextArea, DrawingArea, OffsetImage, AnnotationBbox)
@@ -47,7 +48,9 @@ def plot_supermarket(ax,brand,supermarket):
 
 def create_plot():
     fig, ax = plt.subplots()
+    print('DETERMINING MINIMA')
     minima = determine_minima(brands)
+    print('PLOTTING IMAGE')
     for key in minima.keys():
         ab=plot_supermarket(ax,key,minima[key][0])
         ax.add_artist(ab)
@@ -56,9 +59,11 @@ def create_plot():
     img = mpimg.imread('background.jpg')
     plt.tick_params(axis='both', labelsize=0, length = 0)
     plt.box(False)
-    plt.imshow(img)
+    #plt.imshow(img)
+    print('SAVING IMAGE')
     plt.savefig('output.png', bbox_inches='tight')
     plt.savefig('../dijkstrar.github.io/images/beer_output.png', bbox_inches='tight')
 
 if __name__ == '__main__':
     create_plot()
+    print('Done')
