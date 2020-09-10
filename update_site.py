@@ -8,13 +8,13 @@ import subprocess
 import sys
 
 brands = ['Heineken','Grolsch','Brand','Hertog Jan']
-colors_supermarket={'Dirk':	'#dd0000','Jumbo':'#ffcc00','Albert Heijn':'#00a1e5'}
+colors_supermarket={'Dirk': '#dd0000','Jumbo':'#ffcc00','Albert Heijn':'#00a1e5'}
 colors_beer = {'Heineken':'#26814c','Grolsch':'#38901f','Brand':'#1b3c33','Hertog Jan':'#debc50'}
 
 def get_dataframe_supermarket(supermarket):
     result = pd.DataFrame()
     for brand in ['Heineken','Grolsch','Brand','Hertog Jan']:
-        result[brand]=pd.read_csv('logs/'+brand+'.txt',sep=';',index_col='Date')[supermarket]
+        result[brand]=pd.read_csv('/home/pi/beer_tracker/logs/'+brand+'.txt',sep=';',index_col='Date')[supermarket]
     return result
 
 def get_dataframe_brand():
@@ -150,7 +150,7 @@ Moreover, you can also select to see the history of beer prices at each separate
 
 ## Example
 A relatively relatively straightforward image will highlight which brands can be obtained for the lowest price at which supermarket.
-<img src="/images/beer_output.png" >
+<img src="/home/pi/dijkstrar.github.io/images/beer_output.png" >
 
 ## History of Beer Prices 
 ### Per Supermarket
@@ -168,15 +168,8 @@ A relatively relatively straightforward image will highlight which brands can be
         f.write('\n### Per Beer Brand \n')
         f.write(get_beer_graphs(df))
         f.close()
+        print('COMPOSING TEXT IS COMPLETE')
 
-#        print('Error occurred in Generating plotly files')
-#        with open(path,'w') as f:
-#            f.write(title_md)
-#            f.write(update_date_md)
-#            f.write(body_md)
-#            f.write(javascript_md)
-#            f.write('*An error occurred in generating plots*')
-#        f.close()
 
 if __name__ == '__main__':
     print('STARTING')

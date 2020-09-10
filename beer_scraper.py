@@ -58,10 +58,12 @@ def albert_heijn(driver) -> dict:
 
     result_dict = {}
     for (beer,url) in beer_urls.items():
+        print(url)
         results_html=visit_page(url,driver)
         soup = BeautifulSoup(results_html, 'html.parser')
         info = extract_price(soup)
         result_dict[beer] = info
+        print(info)
     return result_dict
 
 
@@ -146,6 +148,7 @@ def jumbo(driver):
         soup = BeautifulSoup(results_html, 'html.parser')
         info = extract_price(soup)
         result_dict[beer] = info
+        print(info)
     return result_dict
 
 def fetch_prices():
@@ -157,7 +160,7 @@ def fetch_prices():
     
     #write files
     for brand in brands:
-        file = open('logs/'+brand+'.txt','a')
+        file = open('/home/pi/beer_tracker/logs/'+brand+'.txt','a')
         date = pd.to_datetime("today").strftime("%Y/%m/%d")
         file.write(date+';'+str(ah_prices[brand])+';'+str(dirk_prices[brand])+';'+str(jumbo_prices[brand])+'\n')
         file.close()
