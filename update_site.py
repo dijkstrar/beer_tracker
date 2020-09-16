@@ -43,10 +43,7 @@ def get_supermarket_graph(df):
     fig.update_layout(
         updatemenus=[go.layout.Updatemenu(
             active=0,
-            direction='right',x = 0.3,
-            xanchor = 'left',
-            y = 1.21,
-            yanchor = 'top',
+            direction='down',
             buttons=list(
                 [dict(label = 'Select Supermarket',
                       method = 'update',
@@ -95,10 +92,7 @@ def get_beer_graphs(df):
     fig.update_layout(
         updatemenus=[go.layout.Updatemenu(
             active=0,
-            direction='right',x = 0.3,
-            xanchor = 'left',
-            y = 1.21,
-            yanchor = 'top',
+            direction='down',
             buttons=list(
                 [dict(label = 'Select Label',
                       method = 'update',
