@@ -150,7 +150,7 @@ Moreover, you can also select to see the history of beer prices at each separate
 
 ## Example
 A relatively relatively straightforward image will highlight which brands can be obtained for the lowest price at which supermarket.
-<img src="/home/pi/dijkstrar.github.io/images/beer_output.png" >
+<img src="/images/beer_output.png" >
 
 ## History of Beer Prices 
 ### Per Supermarket
