@@ -74,16 +74,16 @@ def dirk(driver):
            'Brand':'https://www.dirk.nl/boodschappen/dranken-sap-koffie-thee/bier/brand-pilsener/8359',
                 }
     def extract_price(soup: BeautifulSoup, discount):
-        if discount:
-            #https://stackoverflow.com/questions/1547574/regex-for-prices
-            spantext = (soup.select("span")[1])
-            match = re.findall(r'\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})',str(spantext))
-            price = float(match[0])
-        else:
-            full =float((soup.select_one("span[class*='product-card__price__euros']").text)[:-1])
-            fract= float(soup.select_one("span[class*='product-card__price__cents']").text)/100
-            price = full+fract
-        return price
+        full =float((soup.select_one("span[class*='product-card__price__euros']").text)[:-1])
+        fract= float(soup.select_one("span[class*='product-card__price__cents']").text)/100
+        price = full+fract
+        return price*(1-discount/100)
+    
+    def extract_discount(soup: BeautifulSoup):
+        spantext = (soup.select("span")[0]).text
+        match = re.findall(r'[0-9]*',str(spantext))
+        discount_factor = float(int(match[0]))
+        return discount_factor
 
     def visit_page(url,driver):
         print(url)
@@ -92,12 +92,14 @@ def dirk(driver):
         try: # discounted
             results_selector = "div[class*='product-card__discount']"
             results_el = driver.find_element_by_css_selector(results_selector)
-            discount = True
+            results_html = results_el.get_attribute('outerHTML')
+            soup = BeautifulSoup(results_html, 'html.parser')
+            discount = extract_discount(soup)
             assort=True
             
         except NoSuchElementException: #not discounted
-            discount = False
-            results_selector = "div[class*='product-card__price__new']"
+            discount = 0
+        results_selector = "div[class*='product-card__price__new']"
         try:
             results_el = driver.find_element_by_css_selector(results_selector)
             results_html = results_el.get_attribute('outerHTML')
