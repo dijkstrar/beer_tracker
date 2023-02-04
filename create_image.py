@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #IMPORTS
 print('STARTING')
 import matplotlib
