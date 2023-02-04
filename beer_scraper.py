@@ -130,22 +130,26 @@ def jumbo(driver):
            'Brand':'https://www.jumbo.com/brand-bier-krat-24-x-30cl/140388KRT',
                 }
 
+    def extract_price(soup: BeautifulSoup):
+        full = float(soup.select_one('span[class*="whole"]').text)
+        fract = float(soup.select_one('sup[class*="fractional"]').text)/100
+        return full+fract
+
     def visit_page(url,driver):
         driver.get(url)
-        print(url)
-        driver.get(url)
         time.sleep(1)
-        results_selector ='//*[@id="__layout"]/div/div[2]/div/div[2]/div/div[2]/div/div[1]/div[1]'
+        results_selector = '//*[@id="__layout"]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[2]/div[1]'
         results_el = driver.find_element_by_xpath(results_selector)
-        price = '.'.join(results_el.text.split('\n'))
-        return price
-    
-    
+        results_html = results_el.get_attribute('outerHTML')
+        return results_html
+
     result_dict = {}
     for (beer,url) in beer_urls.items():
-        price=visit_page(url,driver)
-        result_dict[beer] = price
-        print(price)
+        print(url)
+        results_html=visit_page(url)
+        soup = BeautifulSoup(results_html, 'html.parser')
+        info = extract_price(soup)
+        result_dict[beer] = info
     return result_dict
 
 def fetch_prices():
