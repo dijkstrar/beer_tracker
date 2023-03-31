@@ -74,10 +74,14 @@ def dirk(driver):
            'Brand':'https://www.dirk.nl/boodschappen/dranken-sap-koffie-thee/bier/brand-pilsener/8359',
                 }
     def extract_price(soup: BeautifulSoup, discount):
-        full =float((soup.select_one("span[class*='product-card__price__euros']").text)[:-1])
-        fract= float(soup.select_one("span[class*='product-card__price__cents']").text)/100
-        price = full+fract
-        return price*(1-discount/100)
+        euro = soup.select_one("span[class*='product-card__price__euros']").text
+        euro = euro.replace('.','')
+        cents = soup.select_one("span[class*='product-card__price__cents']").text
+        
+        euro_float = float(euro) if cents != '' else 0
+        cents_float = float(cents)/100 if cents!='' else float(euro)/100
+        price = euro_float+cents_float
+        return price
     
     def extract_discount(soup: BeautifulSoup):
         spantext = (soup.select("span")[0]).text
