@@ -104,6 +104,7 @@ def dirk(driver):
 
     result_dict = {}
     for (beer,url) in beer_urls.items():
+        print(url)
         results_html,discount=visit_page(url,driver)
         soup = BeautifulSoup(results_html, 'html.parser')
         info = extract_price(soup,discount)
