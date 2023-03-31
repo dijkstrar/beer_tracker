@@ -89,37 +89,22 @@ def dirk(driver):
         discount_factor = float(int(match[0]))
         return discount_factor
 
-    def visit_page(url,driver):
-        print(url)
+    def visit_page(url, driver):
         driver.get(url)
-        time.sleep(30)
         try: # discounted
-            results_selector = "div[class*='product-card__discount']"
+            results_selector = "div[class*='product-card__price__new offer']"
             results_el = driver.find_element_by_css_selector(results_selector)
-            results_html = results_el.get_attribute('outerHTML')
-            soup = BeautifulSoup(results_html, 'html.parser')
-            discount = extract_discount(soup)
-            assort=True
-            
+            discount = True
         except NoSuchElementException: #not discounted
-            discount = 0
-        results_selector = "div[class*='product-card__price__new']"
-        try:
+            discount = False
+            results_selector = "div[class*='product-card__price__new']"
             results_el = driver.find_element_by_css_selector(results_selector)
-            results_html = results_el.get_attribute('outerHTML')
-            assort=True
-        except: #item does not exist
-            assort=False
-            results_html=None
-            discount=None
-        return results_html,discount,assort
+        results_html = results_el.get_attribute('outerHTML')
+        return results_html,discount
 
     result_dict = {}
     for (beer,url) in beer_urls.items():
-        results_html,discount,assort=visit_page(url,driver)
-        if not assort:
-            result_dict[beer]=np.nan
-            continue
+        results_html,discount=visit_page(url,driver)
         soup = BeautifulSoup(results_html, 'html.parser')
         info = extract_price(soup,discount)
         result_dict[beer] = info
